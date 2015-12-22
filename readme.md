@@ -1,6 +1,6 @@
 # RD Material Tabs
 
-The plugin provides easy to use responsive tabs functionality like in Material Design Specification. The tabs works well with mouse and touch devices.
+The plugin provides easy to use responsive tabs functionality according to Material Design Specification. The tabs works well with mouse and touch devices.
 
 Check out this [Demo](http://cms.devoffice.com/coding-dev/rd-material-tabs/demo/) to see it in action!
 
@@ -43,6 +43,12 @@ Apply the tabs styles to the scene
 
 ```html
 <link rel="stylesheet" href="path/to/css/jquery.rd-material-tabs.css">
+```
+
+Include jquery.rd-material-tabs.js
+
+```html
+<script src="js/jquery.rd-material-tabs.js">
 ```
 
 Finally, initialize the script

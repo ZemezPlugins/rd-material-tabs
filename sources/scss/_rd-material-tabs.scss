@@ -1,0 +1,81 @@
+/*
+* @subsection   RD Material Tabs
+*
+* @description  Describes style declarations for RD Material Tabs extension
+*
+* @author       Rafael Shayvolodyan
+* @version      1.0.0
+*/
+
+.rd-material-tabs{
+  -webkit-tap-highlight-color: transparent;
+  width: 100%;
+  position: relative;
+
+  &__list{
+    white-space: nowrap;
+    border-bottom: 1px solid lighten($content-bg,7%);
+    background: $content-bg;
+
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    .rd-material-tab{
+      display: inline-block;
+      a{
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 20px;
+        letter-spacing: 2px;
+        padding: 10px 20px;
+        text-align: center;
+        transition: .3s all ease;
+      }
+      &.rd-material-tab-active a, .desktop & a:hover{
+        color: $white;
+      }
+    }
+    @media (min-width: $screen-sm-min) {
+      padding: 0 0 15px;
+    }
+  }
+
+
+  img{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  &__stage-outer{
+    position: relative;
+    overflow: hidden;
+  }
+
+  &__stage{
+    @include clearfix;
+  }
+}
+
+.rd-material-tabs__container{
+  padding: 0 5px;
+  margin-top: 60px;
+  .rd-material-tab{
+    float: left;
+    width: 100%;
+  }
+  .thumb{
+    margin-top: 10px;
+  }
+  @media (min-width: $screen-sm-min) {
+    margin-top: 60px;
+  }
+}
+
+.rd-material-tabs-grab, .rd-material-tabs-grab a{
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
