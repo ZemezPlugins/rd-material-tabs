@@ -1,7 +1,8 @@
 ###*
  * @module       RDMaterialTabs
  * @author       Rafael Shayvolodyan
- * @version      1.0.0
+ * @see          https://ua.linkedin.com/in/rafael-shayvolodyan-3a297b96
+ * @version      1.0.1
 ###
 
 (($, document, window) ->
@@ -36,13 +37,8 @@
       speed: 500,
       easing: 'cubic-bezier(0.005, 0.300, 0.200, 1.000)'
       stagePadding: 0
-      responsive:
-        0:
-          items: 3
-        480:
-          items: 4
-        768:
-          items: 5
+      dragContent: true
+      dragList: true
       callbacks:
         onDragStart: false
         onDragEnd: false
@@ -119,7 +115,7 @@
       if list
         stage = ctx.$list.find('.' + ctx.settings.stageClass)
         padding = ctx.getOption('stagePadding')
-        if padding > 0
+        if padding > 0  and ctx.getOption('dragList')
           stage.css({
             'padding-left': padding
             'padding-right': padding
@@ -135,6 +131,17 @@
         margin = ctx.getOption('marginContent')
 
       item = stage.find('.' + ctx.settings.itemClass)
+      if list and  not ctx.getOption('dragList')
+        ctx.setListTranslate(ctx, 0)
+        stage.css({
+          'padding-left': 0
+          'padding-right': 0
+        })
+        item.css({
+          'width': 'auto'
+          'margin-right': '0'
+        })
+        return
       count = item.length
 
       item.css({
@@ -151,7 +158,10 @@
     resize: (ctx) ->
       ctx.setWidth(ctx, true)
       ctx.setWidth(ctx, false)
-      ctx.moveTo(ctx, ctx.activeIndex)
+      setTimeout( ->
+        ctx.moveTo(ctx, ctx.activeIndex)
+      , 300)
+
 
       ###*
       * Init all JS event handlers
@@ -164,7 +174,6 @@
       else
         ctx.$element.on('mousedown.rd.mt', $.proxy(ctx.onTouchStart, @, ctx))
         ctx.$element.on('mouseleave.rd.mt', $.proxy(ctx.onTouchEnd, @, ctx))
-#        ctx.$list.on('mouseleave.rd.mt', $.proxy(ctx.onTouchEnd, @, ctx))
       return
 
     ###*
@@ -189,7 +198,7 @@
         ctx.touches.prevX = null
         ctx.state.isDragged = false
 
-        if ctx.touches.list
+        if ctx.touches.list and ctx.getOption('dragList')
           if ctx.state.isSwiping
             if timeDiff > 20
               speed = ctx.touches.diff / (timeDiff / 200)
@@ -213,10 +222,9 @@
             else if newPosition < ctx.getMaxTranslate(ctx, ctx.$list)
               newPosition = ctx.getMaxTranslate(ctx, ctx.$list)
             ctx.setListTranslate(ctx, newPosition)
-        else
+        else if not ctx.touches.list and ctx.getOption('dragContent')
           ctx.setContentTransition(ctx, ctx.options.speed)
           ctx.setListTransition(ctx, ctx.options.speed)
-
 
           if (ctx.touches.direction is 'left' && ctx.activeIndex is 0) || (ctx.touches.direction is 'right' && ctx.activeIndex is ctx.$content.find('.' + ctx.settings.itemClass).length - 1)
             ctx.moveTo(ctx, ctx.activeIndex)
@@ -279,7 +287,7 @@
           ctx.onTouchEnd(ctx, event)
           return
         event.preventDefault()
-        if not isTouch
+        if not isTouch and ((ctx.touches.list and ctx.getOption('dragList')) || (not ctx.touches.list and ctx.getOption('dragContent')))
           ctx.$element.addClass('rd-material-tabs-grab')
 
         if Math.abs(diff) > 0
@@ -308,9 +316,9 @@
       ctx.touches.prevX = ctx.touches.currentX
       ctx.touches.prevDirection = ctx.touches.direction
 
-      if ctx.touches.list
+      if ctx.touches.list and ctx.getOption('dragList')
         ctx.setListTranslate(ctx, ctx.touches.currentTranslate)
-      else
+      else if !ctx.touches.list and ctx.getOption('dragContent')
         ctx.setContentTranslate(ctx, ctx.touches.currentTranslate)
 
       return
@@ -375,7 +383,8 @@
 
           if Math.abs(deltaX) > 1
             ctx.state.isDragged = true
-          if not isTouch
+
+          if not isTouch and ((ctx.touches.list and ctx.getOption('dragList')) || (not ctx.touches.list and ctx.getOption('dragContent')))
             ctx.$element.addClass('rd-material-tabs-grab')
 
           @))
@@ -426,7 +435,8 @@
       itemWidth = ctx.getContentItemWidth(ctx)
       offset = -((itemWidth * index) + ctx.getOption('marginContent') * index)
       ctx.setContentTranslate(ctx, offset)
-      ctx.moveListTo(ctx, index)
+      if ctx.getOption('dragList')
+        ctx.moveListTo(ctx, index)
       ctx.updateActive(ctx, index)
 
       return
@@ -566,7 +576,7 @@
     * @protected
     ###
     getMaxTranslate: (ctx, el) ->
-      return ctx.$win.width() - el.find('.' + ctx.settings.stageClass).outerWidth()
+      return ctx.$win.width() - ctx.getWidth(ctx, el.find('.' + ctx.settings.stageClass))
 
     ###*
     * Sets Vendor prefix

@@ -1,7 +1,8 @@
 /**
  * @module       RDMaterialTabs
  * @author       Rafael Shayvolodyan
- * @version      1.0.0
+ * @see          https://ua.linkedin.com/in/rafael-shayvolodyan-3a297b96
+ * @version      1.0.1
  */
 
 (function() {
@@ -38,17 +39,8 @@
         speed: 500,
         easing: 'cubic-bezier(0.005, 0.300, 0.200, 1.000)',
         stagePadding: 0,
-        responsive: {
-          0: {
-            items: 3
-          },
-          480: {
-            items: 4
-          },
-          768: {
-            items: 5
-          }
-        },
+        dragContent: true,
+        dragList: true,
         callbacks: {
           onDragStart: false,
           onDragEnd: false,
@@ -143,7 +135,7 @@
         if (list) {
           stage = ctx.$list.find('.' + ctx.settings.stageClass);
           padding = ctx.getOption('stagePadding');
-          if (padding > 0) {
+          if (padding > 0 && ctx.getOption('dragList')) {
             stage.css({
               'padding-left': padding,
               'padding-right': padding
@@ -159,6 +151,18 @@
           margin = ctx.getOption('marginContent');
         }
         item = stage.find('.' + ctx.settings.itemClass);
+        if (list && !ctx.getOption('dragList')) {
+          ctx.setListTranslate(ctx, 0);
+          stage.css({
+            'padding-left': 0,
+            'padding-right': 0
+          });
+          item.css({
+            'width': 'auto',
+            'margin-right': '0'
+          });
+          return;
+        }
         count = item.length;
         item.css({
           'width': ctx.px(itemWidth),
@@ -176,7 +180,9 @@
       RDMaterialTabs.prototype.resize = function(ctx) {
         ctx.setWidth(ctx, true);
         ctx.setWidth(ctx, false);
-        return ctx.moveTo(ctx, ctx.activeIndex);
+        return setTimeout(function() {
+          return ctx.moveTo(ctx, ctx.activeIndex);
+        }, 300);
 
         /**
         * Init all JS event handlers
@@ -222,7 +228,7 @@
           timeDiff = ctx.touches.endTime - ctx.touches.startTime;
           ctx.touches.prevX = null;
           ctx.state.isDragged = false;
-          if (ctx.touches.list) {
+          if (ctx.touches.list && ctx.getOption('dragList')) {
             if (ctx.state.isSwiping) {
               if (timeDiff > 20) {
                 speed = ctx.touches.diff / (timeDiff / 200);
@@ -248,7 +254,7 @@
               }
               ctx.setListTranslate(ctx, newPosition);
             }
-          } else {
+          } else if (!ctx.touches.list && ctx.getOption('dragContent')) {
             ctx.setContentTransition(ctx, ctx.options.speed);
             ctx.setListTransition(ctx, ctx.options.speed);
             if ((ctx.touches.direction === 'left' && ctx.activeIndex === 0) || (ctx.touches.direction === 'right' && ctx.activeIndex === ctx.$content.find('.' + ctx.settings.itemClass).length - 1)) {
@@ -331,7 +337,7 @@
             return;
           }
           event.preventDefault();
-          if (!isTouch) {
+          if (!isTouch && ((ctx.touches.list && ctx.getOption('dragList')) || (!ctx.touches.list && ctx.getOption('dragContent')))) {
             ctx.$element.addClass('rd-material-tabs-grab');
           }
           if (Math.abs(diff) > 0) {
@@ -358,9 +364,9 @@
         }
         ctx.touches.prevX = ctx.touches.currentX;
         ctx.touches.prevDirection = ctx.touches.direction;
-        if (ctx.touches.list) {
+        if (ctx.touches.list && ctx.getOption('dragList')) {
           ctx.setListTranslate(ctx, ctx.touches.currentTranslate);
-        } else {
+        } else if (!ctx.touches.list && ctx.getOption('dragContent')) {
           ctx.setContentTranslate(ctx, ctx.touches.currentTranslate);
         }
       };
@@ -430,7 +436,7 @@
             if (Math.abs(deltaX) > 1) {
               ctx.state.isDragged = true;
             }
-            if (!isTouch) {
+            if (!isTouch && ((ctx.touches.list && ctx.getOption('dragList')) || (!ctx.touches.list && ctx.getOption('dragContent')))) {
               ctx.$element.addClass('rd-material-tabs-grab');
             }
             return this;
@@ -499,7 +505,9 @@
         itemWidth = ctx.getContentItemWidth(ctx);
         offset = -((itemWidth * index) + ctx.getOption('marginContent') * index);
         ctx.setContentTranslate(ctx, offset);
-        ctx.moveListTo(ctx, index);
+        if (ctx.getOption('dragList')) {
+          ctx.moveListTo(ctx, index);
+        }
         ctx.updateActive(ctx, index);
       };
 
@@ -680,7 +688,7 @@
        */
 
       RDMaterialTabs.prototype.getMaxTranslate = function(ctx, el) {
-        return ctx.$win.width() - el.find('.' + ctx.settings.stageClass).outerWidth();
+        return ctx.$win.width() - ctx.getWidth(ctx, el.find('.' + ctx.settings.stageClass));
       };
 
 

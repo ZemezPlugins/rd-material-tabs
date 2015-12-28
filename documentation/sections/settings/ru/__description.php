@@ -110,6 +110,34 @@
     Определяет коеффициент скорости при выполнении события драга.
 </p>
 
+<h5>dragContent</h5>
+<dl class="inline-term">
+    <dt>Тип</dt>
+    <dd>Boolean</dd>
+</dl>
+<dl class="inline-term">
+    <dt>Значение по-умолчанию</dt>
+    <dd>true</dd>
+</dl>
+
+<p>
+    Включает\выключает возможность драга в контенте.
+</p>
+
+<h5>dragList</h5>
+<dl class="inline-term">
+    <dt>Тип</dt>
+    <dd>Boolean</dd>
+</dl>
+<dl class="inline-term">
+    <dt>Значение по-умолчанию</dt>
+    <dd>true</dd>
+</dl>
+
+<p>
+    Включает\выключает возможность драга в списке наименований.
+</p>
+
 <h5>responsive</h5>
 <dl class="inline-term">
     <dt>Тип</dt>

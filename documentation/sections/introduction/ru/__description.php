@@ -14,7 +14,7 @@
     </li>
     <li>
         Сам скрипт доступен в нашем публичном репозитории:
-        <a href='http://products.git.devoffice.com/coding-development/rd-multitabs.git'>Git</a>
+        <a href='https://github.com/TemplatemonsterPlugins/rd-material-tabs'>Git</a>
     </li>
 </ul>
 
@@ -23,6 +23,12 @@
 <ul class="marked-list">
     <li>
         <dl class="inline-term">
+            <dt>
+                28.12.2015
+            </dt>
+            <dd>
+                Версия 1.0.1. Добавлены опции для включения\отключения драга.
+            </dd>
             <dt>
                 21.12.2015
             </dt>

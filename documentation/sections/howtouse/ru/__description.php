@@ -15,7 +15,7 @@
 
 <p>
     Для начала необходимо скачать данный скрипт из нашего публичного репозитория:
-    <a href="http://products.git.devoffice.com/coding-development/rd-multitabs.git">Кликабельно</a>
+    <a href="https://github.com/TemplatemonsterPlugins/rd-material-tabs">Кликабельно</a>
 </p>
 
 

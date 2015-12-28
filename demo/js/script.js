@@ -181,7 +181,7 @@ function isIE() {
     var o = $('.rd-material-tabs');
     var html = $('html');
     if (o.length) {
-        include('../dist/js/jquery.rd-material-tabs.min.js');
+        include('../dist/js/jquery.rd-material-tabs.js');
 
         $(document).ready(function () {
             var uniqueRandoms = [];
