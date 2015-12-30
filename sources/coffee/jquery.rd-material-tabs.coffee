@@ -39,6 +39,7 @@
       stagePadding: 0
       dragContent: true
       dragList: true
+      responsive: null
       callbacks:
         onDragStart: false
         onDragEnd: false
@@ -55,7 +56,6 @@
       @$win = $(window)
       @$doc = $(document)
       @activeIndex = 0
-      @changing = false
       @settings =
         stageClass: 'rd-material-tabs__stage',
         stageOuterClass: 'rd-material-tabs__stage-outer',
@@ -80,7 +80,9 @@
       ctx.setVendor(ctx)
       ctx.createDOM(ctx)
       ctx.initHandlers(ctx)
-      ctx.$win.trigger('resize')
+      ctx.setWidth(ctx, true)
+      ctx.setWidth(ctx, false)
+      ctx.moveTo(ctx.activeIndex)
       ctx.options.callbacks.onInit.call(@, ctx) if ctx.options.callbacks.onInit
       return
 
@@ -159,14 +161,14 @@
       ctx.setWidth(ctx, true)
       ctx.setWidth(ctx, false)
       setTimeout( ->
-        ctx.moveTo(ctx, ctx.activeIndex)
+        ctx.moveTo(ctx.activeIndex)
       , 300)
 
 
-      ###*
-      * Init all JS event handlers
-      * @protected
-      ###
+    ###*
+    * Init all JS event handlers
+    * @protected
+    ###
     initHandlers: (ctx) ->
       ctx.$win.on('resize', $.proxy(ctx.resize, @, ctx))
       if isTouch
@@ -227,7 +229,7 @@
           ctx.setListTransition(ctx, ctx.options.speed)
 
           if (ctx.touches.direction is 'left' && ctx.activeIndex is 0) || (ctx.touches.direction is 'right' && ctx.activeIndex is ctx.$content.find('.' + ctx.settings.itemClass).length - 1)
-            ctx.moveTo(ctx, ctx.activeIndex)
+            ctx.moveTo(ctx.activeIndex)
             return
           index = ctx.activeIndex
 
@@ -241,13 +243,7 @@
               index = ctx.activeIndex - 1
             else if ctx.touches.direction is 'right'
               index = ctx.activeIndex + 1
-
-          if ctx.activeIndex != index
-            ctx.activeIndex = index
-            ctx.options.callbacks.onChangeStart.call(@, ctx) if ctx.options.callbacks.onChangeStart
-            ctx.changing = true
-
-          ctx.moveTo(ctx, ctx.activeIndex)
+          ctx.moveTo(index)
       else if not ctx.state.isDragged
         if ctx.touches.list
           el = $(event.target)
@@ -255,11 +251,7 @@
             ctx.setContentTransition(ctx, ctx.options.speed)
             ctx.setListTransition(ctx, ctx.options.speed)
             index = el.parent().index()
-            if ctx.activeIndex != index
-              ctx.activeIndex = index
-              ctx.options.callbacks.onChangeStart.call(@, ctx) if ctx.options.callbacks.onChangeStart
-              ctx.changing = true
-            ctx.moveTo(ctx, ctx.activeIndex)
+            ctx.moveTo(index)
       ctx.state.isTouched = false
       ctx.options.callbacks.onDragEnd.call(@, ctx) if ctx.options.callbacks.onDragEnd
       return
@@ -431,13 +423,15 @@
      * @param {number} index - index of content element
      * @protected
      ###
-    moveTo: (ctx, index) ->
-      itemWidth = ctx.getContentItemWidth(ctx)
-      offset = -((itemWidth * index) + ctx.getOption('marginContent') * index)
-      ctx.setContentTranslate(ctx, offset)
-      if ctx.getOption('dragList')
-        ctx.moveListTo(ctx, index)
-      ctx.updateActive(ctx, index)
+    moveTo: (index) ->
+      if index != @.activeIndex
+        @.options.callbacks.onChangeStart.call(@) if @.options.callbacks.onChangeStart
+      itemWidth = @.getContentItemWidth(@)
+      offset = -((itemWidth * index) + @.getOption('marginContent') * index)
+      @.setContentTranslate(@, offset)
+      if @.getOption('dragList')
+        @.moveListTo(@, index)
+      @.updateActive(@, index)
 
       return
 
@@ -477,7 +471,8 @@
       ctx.$element.find('.' + ctx.settings.itemClass + '-active').removeClass(ctx.settings.itemClass + '-active')
       ctx.$list.find('.' + ctx.settings.itemClass).eq(index).addClass(ctx.settings.itemClass + '-active')
       ctx.$content.find('.' + ctx.settings.itemClass).eq(index).addClass(ctx.settings.itemClass + '-active')
-      if ctx.changing
+      if index != ctx.activeIndex
+        ctx.activeIndex = index
         ctx.options.callbacks.onChangeEnd.call(@, ctx) if ctx.options.callbacks.onChangeEnd
       return
 
@@ -626,9 +621,12 @@
     * @protected
     ###
     getOption: (key)->
-      for point of @.options.responsive
-        if point <= @.$win.width() then targetPoint = point
-      if @.options.responsive[targetPoint][key]? then @.options.responsive[targetPoint][key] else @.options[key]
+      if @.options.responsive?
+        for point of @.options.responsive
+          if point <= @.$win.width() then targetPoint = point
+        if @.options.responsive[targetPoint][key]? then @.options.responsive[targetPoint][key] else @.options[key]
+      else
+        @.options[key]
 
 
   ###*

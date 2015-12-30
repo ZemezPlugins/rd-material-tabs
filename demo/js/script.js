@@ -218,7 +218,7 @@ function isIE() {
                     onInit: function () {
                         o.addClass('loaded');
                         if (html.hasClass('desktop')){
-                            makeVisible(o.find('.rd-material-tab-active .image').length);
+                            makeVisible(o.find('.rd-material-tab:first-child .image'));
                         }
                     },
                     onChangeStart: function () {
@@ -228,7 +228,7 @@ function isIE() {
                     },
                     onChangeEnd: function () {
                         if (html.hasClass('desktop')){
-                            makeVisible(o.find('.rd-material-tab-active .image').length);
+                            makeVisible(o.find('.rd-material-tab-active .image'));
                         }
                     }
                 }
@@ -246,16 +246,16 @@ function isIE() {
                 return val;
             }
 
-            function makeVisible(count) {
-                var el = $(".rd-material-tab-active .image"),
+            function makeVisible(el) {
+                var count = el.length,
                     k = 0,
                     step = 0.3;
                 for (var i = 0; i < count; i++) {
-                        timer = setTimeout(function () {
-                            var rand = makeUniqueRandom(count);
-                            el.eq(rand).addClass('visible');
-                        }, k * 35);
-                        k += step;
+                    timer = setTimeout(function () {
+                        var rand = makeUniqueRandom(count);
+                        el.eq(rand).addClass('visible');
+                    }, k * 35);
+                    k += step;
                 }
                 timer2 = setTimeout(function () {
                     el.not('.visible').addClass('visible');

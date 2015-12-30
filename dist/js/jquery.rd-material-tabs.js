@@ -41,6 +41,7 @@
         stagePadding: 0,
         dragContent: true,
         dragList: true,
+        responsive: null,
         callbacks: {
           onDragStart: false,
           onDragEnd: false,
@@ -59,7 +60,6 @@
         this.$win = $(window);
         this.$doc = $(document);
         this.activeIndex = 0;
-        this.changing = false;
         this.settings = {
           stageClass: 'rd-material-tabs__stage',
           stageOuterClass: 'rd-material-tabs__stage-outer',
@@ -92,7 +92,9 @@
         ctx.setVendor(ctx);
         ctx.createDOM(ctx);
         ctx.initHandlers(ctx);
-        ctx.$win.trigger('resize');
+        ctx.setWidth(ctx, true);
+        ctx.setWidth(ctx, false);
+        ctx.moveTo(ctx.activeIndex);
         if (ctx.options.callbacks.onInit) {
           ctx.options.callbacks.onInit.call(this, ctx);
         }
@@ -181,14 +183,15 @@
         ctx.setWidth(ctx, true);
         ctx.setWidth(ctx, false);
         return setTimeout(function() {
-          return ctx.moveTo(ctx, ctx.activeIndex);
+          return ctx.moveTo(ctx.activeIndex);
         }, 300);
-
-        /**
-        * Init all JS event handlers
-        * @protected
-         */
       };
+
+
+      /**
+      * Init all JS event handlers
+      * @protected
+       */
 
       RDMaterialTabs.prototype.initHandlers = function(ctx) {
         ctx.$win.on('resize', $.proxy(ctx.resize, this, ctx));
@@ -258,7 +261,7 @@
             ctx.setContentTransition(ctx, ctx.options.speed);
             ctx.setListTransition(ctx, ctx.options.speed);
             if ((ctx.touches.direction === 'left' && ctx.activeIndex === 0) || (ctx.touches.direction === 'right' && ctx.activeIndex === ctx.$content.find('.' + ctx.settings.itemClass).length - 1)) {
-              ctx.moveTo(ctx, ctx.activeIndex);
+              ctx.moveTo(ctx.activeIndex);
               return;
             }
             index = ctx.activeIndex;
@@ -275,14 +278,7 @@
                 index = ctx.activeIndex + 1;
               }
             }
-            if (ctx.activeIndex !== index) {
-              ctx.activeIndex = index;
-              if (ctx.options.callbacks.onChangeStart) {
-                ctx.options.callbacks.onChangeStart.call(this, ctx);
-              }
-              ctx.changing = true;
-            }
-            ctx.moveTo(ctx, ctx.activeIndex);
+            ctx.moveTo(index);
           }
         } else if (!ctx.state.isDragged) {
           if (ctx.touches.list) {
@@ -291,14 +287,7 @@
               ctx.setContentTransition(ctx, ctx.options.speed);
               ctx.setListTransition(ctx, ctx.options.speed);
               index = el.parent().index();
-              if (ctx.activeIndex !== index) {
-                ctx.activeIndex = index;
-                if (ctx.options.callbacks.onChangeStart) {
-                  ctx.options.callbacks.onChangeStart.call(this, ctx);
-                }
-                ctx.changing = true;
-              }
-              ctx.moveTo(ctx, ctx.activeIndex);
+              ctx.moveTo(index);
             }
           }
         }
@@ -500,15 +489,20 @@
        * @protected
        */
 
-      RDMaterialTabs.prototype.moveTo = function(ctx, index) {
+      RDMaterialTabs.prototype.moveTo = function(index) {
         var itemWidth, offset;
-        itemWidth = ctx.getContentItemWidth(ctx);
-        offset = -((itemWidth * index) + ctx.getOption('marginContent') * index);
-        ctx.setContentTranslate(ctx, offset);
-        if (ctx.getOption('dragList')) {
-          ctx.moveListTo(ctx, index);
+        if (index !== this.activeIndex) {
+          if (this.options.callbacks.onChangeStart) {
+            this.options.callbacks.onChangeStart.call(this);
+          }
         }
-        ctx.updateActive(ctx, index);
+        itemWidth = this.getContentItemWidth(this);
+        offset = -((itemWidth * index) + this.getOption('marginContent') * index);
+        this.setContentTranslate(this, offset);
+        if (this.getOption('dragList')) {
+          this.moveListTo(this, index);
+        }
+        this.updateActive(this, index);
       };
 
 
@@ -558,7 +552,8 @@
         ctx.$element.find('.' + ctx.settings.itemClass + '-active').removeClass(ctx.settings.itemClass + '-active');
         ctx.$list.find('.' + ctx.settings.itemClass).eq(index).addClass(ctx.settings.itemClass + '-active');
         ctx.$content.find('.' + ctx.settings.itemClass).eq(index).addClass(ctx.settings.itemClass + '-active');
-        if (ctx.changing) {
+        if (index !== ctx.activeIndex) {
+          ctx.activeIndex = index;
           if (ctx.options.callbacks.onChangeEnd) {
             ctx.options.callbacks.onChangeEnd.call(this, ctx);
           }
@@ -756,13 +751,17 @@
 
       RDMaterialTabs.prototype.getOption = function(key) {
         var point, targetPoint;
-        for (point in this.options.responsive) {
-          if (point <= this.$win.width()) {
-            targetPoint = point;
+        if (this.options.responsive != null) {
+          for (point in this.options.responsive) {
+            if (point <= this.$win.width()) {
+              targetPoint = point;
+            }
           }
-        }
-        if (this.options.responsive[targetPoint][key] != null) {
-          return this.options.responsive[targetPoint][key];
+          if (this.options.responsive[targetPoint][key] != null) {
+            return this.options.responsive[targetPoint][key];
+          } else {
+            return this.options[key];
+          }
         } else {
           return this.options[key];
         }
