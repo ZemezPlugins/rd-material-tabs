@@ -13343,7 +13343,7 @@ button.swiper-pagination-bullet {
 * @description  Describes style declarations for RD Material Tabs extension
 *
 * @author       Rafael Shayvolodyan
-* @version      1.0.0
+* @version      1.0.2
 */
 .rd-material-tabs {
   -webkit-tap-highlight-color: transparent;
@@ -13419,6 +13419,10 @@ button.swiper-pagination-bullet {
   .rd-material-tabs__container {
     margin-top: 60px;
   }
+}
+
+.rd-material-tabs-canMove {
+  cursor: w-resize;
 }
 
 .rd-material-tabs-grab, .rd-material-tabs-grab a {

@@ -2,7 +2,7 @@
  * @module       RDMaterialTabs
  * @author       Rafael Shayvolodyan
  * @see          https://ua.linkedin.com/in/rafael-shayvolodyan-3a297b96
- * @version      1.0.1
+ * @version      1.0.2
 ###
 
 (($, document, window) ->
@@ -80,6 +80,8 @@
       ctx.setVendor(ctx)
       ctx.createDOM(ctx)
       ctx.initHandlers(ctx)
+      if not isTouch
+        ctx.canMoveCursor()
       ctx.setWidth(ctx, true)
       ctx.setWidth(ctx, false)
       ctx.moveTo(ctx.activeIndex)
@@ -138,11 +140,9 @@
         stage.css({
           'padding-left': 0
           'padding-right': 0
-        })
-        item.css({
           'width': 'auto'
-          'margin-right': '0'
         })
+        item.removeAttr('style')
         return
       count = item.length
 
@@ -247,10 +247,10 @@
       else if not ctx.state.isDragged
         if ctx.touches.list
           el = $(event.target)
-          if event.target.tagName is 'A'
+          if event.target.tagName is 'A' or el.parents('.' + ctx.settings.itemClass + ' a').length
             ctx.setContentTransition(ctx, ctx.options.speed)
             ctx.setListTransition(ctx, ctx.options.speed)
-            index = el.parent().index()
+            index = el.parents('.' + ctx.settings.itemClass).index()
             ctx.moveTo(index)
       ctx.state.isTouched = false
       ctx.options.callbacks.onDragEnd.call(@, ctx) if ctx.options.callbacks.onDragEnd
@@ -434,6 +434,38 @@
       @.updateActive(@, index)
 
       return
+
+    canMoveCursor: () ->
+      ctx = @
+
+      ctx.$list.on('mouseenter', ->
+        if ctx.getOption('dragList')
+         ctx.$element.addClass('rd-material-tabs-canMove')
+        else
+          ctx.$element.removeClass('rd-material-tabs-canMove')
+        return
+      )
+
+      ctx.$list.on('mouseleave', ->
+        ctx.$element.removeClass('rd-material-tabs-canMove')
+        console.log 1
+        return
+      )
+      ctx.$content.on('mouseenter', ->
+        if ctx.getOption('dragContent')
+          ctx.$element.addClass('rd-material-tabs-canMove')
+        else
+          ctx.$element.removeClass('rd-material-tabs-canMove')
+        return
+      )
+
+      ctx.$content.on('mouseleave', ->
+        ctx.$element.removeClass('rd-material-tabs-canMove')
+        return
+      )
+
+      return
+
 
     ###*
      * Converts Number to Pixels.

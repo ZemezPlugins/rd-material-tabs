@@ -2,7 +2,7 @@
  * @module       RDMaterialTabs
  * @author       Rafael Shayvolodyan
  * @see          https://ua.linkedin.com/in/rafael-shayvolodyan-3a297b96
- * @version      1.0.1
+ * @version      1.0.2
  */
 
 (function() {
@@ -92,6 +92,9 @@
         ctx.setVendor(ctx);
         ctx.createDOM(ctx);
         ctx.initHandlers(ctx);
+        if (!isTouch) {
+          ctx.canMoveCursor();
+        }
         ctx.setWidth(ctx, true);
         ctx.setWidth(ctx, false);
         ctx.moveTo(ctx.activeIndex);
@@ -157,12 +160,10 @@
           ctx.setListTranslate(ctx, 0);
           stage.css({
             'padding-left': 0,
-            'padding-right': 0
+            'padding-right': 0,
+            'width': 'auto'
           });
-          item.css({
-            'width': 'auto',
-            'margin-right': '0'
-          });
+          item.removeAttr('style');
           return;
         }
         count = item.length;
@@ -283,10 +284,10 @@
         } else if (!ctx.state.isDragged) {
           if (ctx.touches.list) {
             el = $(event.target);
-            if (event.target.tagName === 'A') {
+            if (event.target.tagName === 'A' || el.parents('.' + ctx.settings.itemClass + ' a').length) {
               ctx.setContentTransition(ctx, ctx.options.speed);
               ctx.setListTransition(ctx, ctx.options.speed);
-              index = el.parent().index();
+              index = el.parents('.' + ctx.settings.itemClass).index();
               ctx.moveTo(index);
             }
           }
@@ -503,6 +504,32 @@
           this.moveListTo(this, index);
         }
         this.updateActive(this, index);
+      };
+
+      RDMaterialTabs.prototype.canMoveCursor = function() {
+        var ctx;
+        ctx = this;
+        ctx.$list.on('mouseenter', function() {
+          if (ctx.getOption('dragList')) {
+            ctx.$element.addClass('rd-material-tabs-canMove');
+          } else {
+            ctx.$element.removeClass('rd-material-tabs-canMove');
+          }
+        });
+        ctx.$list.on('mouseleave', function() {
+          ctx.$element.removeClass('rd-material-tabs-canMove');
+          console.log(1);
+        });
+        ctx.$content.on('mouseenter', function() {
+          if (ctx.getOption('dragContent')) {
+            ctx.$element.addClass('rd-material-tabs-canMove');
+          } else {
+            ctx.$element.removeClass('rd-material-tabs-canMove');
+          }
+        });
+        ctx.$content.on('mouseleave', function() {
+          ctx.$element.removeClass('rd-material-tabs-canMove');
+        });
       };
 
 
