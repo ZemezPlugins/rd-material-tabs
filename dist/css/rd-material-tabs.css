@@ -4,80 +4,57 @@
 * @description  Describes style declarations for RD Material Tabs extension
 *
 * @author       Rafael Shayvolodyan
-* @version      1.0.0
+* @version      1.0.2
 */
 .rd-material-tabs {
-  -webkit-tap-highlight-color: transparent;
-  width: 100%;
-  position: relative;
-}
+    -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    position: relative;
+    opacity: 0;
+    visibility: hidden; }
+
+.rd-material-tabs.loaded {
+    opacity: 1;
+    visibility: visible; }
+
 .rd-material-tabs__list {
-  white-space: nowrap;
-  border-bottom: 1px solid #21271f;
-  background: #10130F;
-  position: fixed;
-  top: 56px;
-  left: 0;
-  right: 0;
-  z-index: 9;
-}
+    white-space: nowrap; }
+
 .rd-material-tabs__list .rd-material-tab {
-  display: inline-block;
-}
-.rd-material-tabs__list .rd-material-tab a {
-  text-transform: uppercase;
-  font-weight: 500;
-  font-size: 20px;
-  letter-spacing: 2px;
-  padding: 10px 20px;
-  text-align: center;
-  transition: .3s all ease;
-}
-.rd-material-tabs__list .rd-material-tab.rd-material-tab-active a, .desktop .rd-material-tabs__list .rd-material-tab a:hover {
-  color: #fff;
-}
-@media (min-width: 768px) {
-  .rd-material-tabs__list {
-    padding: 0 0 15px;
-  }
-}
+    display: inline-block; }
+
 .rd-material-tabs img {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none; }
+
 .rd-material-tabs__stage-outer {
-  position: relative;
-  overflow: hidden;
-}
+    position: relative;
+    overflow: hidden; }
+
 .rd-material-tabs__stage:before, .rd-material-tabs__stage:after {
-  display: table;
-  content: "";
-  line-height: 0;
-}
+    display: table;
+    content: "";
+    line-height: 0; }
+
 .rd-material-tabs__stage:after {
-  clear: both;
-}
+    clear: both; }
 
 .rd-material-tabs__container {
-  padding: 0 5px;
-  margin-top: 60px;
-}
+    padding: 0 5px;
+    margin-top: 60px; }
+
 .rd-material-tabs__container .rd-material-tab {
-  float: left;
-  width: 100%;
-}
+    float: left;
+    width: 100%; }
+
 .rd-material-tabs__container .thumb {
-  margin-top: 10px;
-}
-@media (min-width: 768px) {
-  .rd-material-tabs__container {
-    margin-top: 60px;
-  }
-}
+    margin-top: 10px; }
+
+.rd-material-tabs-canMove {
+    cursor: w-resize; }
 
 .rd-material-tabs-grab, .rd-material-tabs-grab a {
-  cursor: -moz-grabbing;
-  cursor: -webkit-grabbing;
-  cursor: grabbing;
-}
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+    cursor: grabbing; }

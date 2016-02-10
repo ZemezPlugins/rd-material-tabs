@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="demo scss" pattern="file[rd-material-tabs]:demo/sass//*" />
+</component>

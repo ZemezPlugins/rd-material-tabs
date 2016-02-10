@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Dist JS" pattern="(file[rd-multitabs]:dist//*||file[rd-material-tabs]:sources/scss//*)&amp;&amp;!file[rd-material-tabs]:sources//*||file[rd-material-tabs]:dist//*" />
+</component>

@@ -700,7 +700,6 @@ html body .page { // Increases specificity to use with background helpers
 @import "extensions/_vide.scss";
 @import "extensions/_ui-to-top.scss";
 @import "extensions/_rd-navbar.scss";
-@import "extensions/_rd-material-tabs.scss";
 @import "extensions/_magnific-popup.scss";
 
 
@@ -744,6 +743,58 @@ html body .page { // Increases specificity to use with background helpers
 
   &, #{headings()} {
     color: $footer-color;
+  }
+}
+
+
+.rd-material-tabs{
+  -webkit-tap-highlight-color: transparent;
+  width: 100%;
+  position: relative;
+  opacity: 0;
+  visibility: hidden;
+  &.loaded{
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &__list{
+    border-bottom: 1px solid lighten($content-bg,7%);
+    background: $content-bg;
+
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    .rd-material-tab{
+      a{
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 20px;
+        letter-spacing: 2px;
+        padding: 10px 20px;
+        text-align: center;
+        transition: .3s all ease;
+      }
+      &.rd-material-tab-active a, .desktop & a:hover{
+        color: $white;
+      }
+    }
+    @media (min-width: $screen-sm-min) {
+      padding: 0 0 15px;
+    }
+  }
+}
+
+.rd-material-tabs__container{
+  padding: 0 5px;
+  margin-top: 60px;
+  .thumb{
+    margin-top: 10px;
+  }
+  @media (min-width: $screen-sm-min) {
+    margin-top: 60px;
   }
 }
 
