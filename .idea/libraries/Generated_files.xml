@@ -3,12 +3,12 @@
     <properties>
       <sourceFilesUrls>
         <item url="file://$PROJECT_DIR$/dist/js/jquery.rd-material-tabs.min.js" />
-        <item url="file://$PROJECT_DIR$/dist/js/jquery.rd-material-tabs.min.js" />
+        <item url="file://$PROJECT_DIR$/dist/js/jquery.rd-material-tabs.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
       <root url="file://$PROJECT_DIR$/dist/js/jquery.rd-material-tabs.min.js" />
-      <root url="file://$PROJECT_DIR$/dist/js/jquery.rd-material-tabs.min.js" />
+      <root url="file://$PROJECT_DIR$/dist/js/jquery.rd-material-tabs.js" />
     </CLASSES>
     <SOURCES />
   </library>

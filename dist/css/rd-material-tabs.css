@@ -4,57 +4,54 @@
 * @description  Describes style declarations for RD Material Tabs extension
 *
 * @author       Rafael Shayvolodyan
-* @version      1.0.2
+* @version      1.0.3
 */
+@-webkit-keyframes sprite-animation {
+  from {
+    background-position: 0 0; } }
+@keyframes sprite-animation {
+  from {
+    background-position: 0 0; } }
 .rd-material-tabs {
-    -webkit-tap-highlight-color: transparent;
-    width: 100%;
-    position: relative;
-    opacity: 0;
-    visibility: hidden; }
-
-.rd-material-tabs.loaded {
+  -webkit-tap-highlight-color: transparent;
+  width: 100%;
+  position: relative;
+  opacity: 0;
+  visibility: hidden; }
+  .rd-material-tabs.loaded {
     opacity: 1;
     visibility: visible; }
-
-.rd-material-tabs__list {
+  .rd-material-tabs__list {
     white-space: nowrap; }
-
-.rd-material-tabs__list .rd-material-tab {
-    display: inline-block; }
-
-.rd-material-tabs img {
+    .rd-material-tabs__list .rd-material-tab {
+      display: inline-block; }
+  .rd-material-tabs img {
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none; }
-
-.rd-material-tabs__stage-outer {
+  .rd-material-tabs__stage-outer {
     position: relative;
     overflow: hidden; }
-
-.rd-material-tabs__stage:before, .rd-material-tabs__stage:after {
+  .rd-material-tabs__stage:before, .rd-material-tabs__stage:after {
     display: table;
     content: "";
     line-height: 0; }
-
-.rd-material-tabs__stage:after {
+  .rd-material-tabs__stage:after {
     clear: both; }
 
 .rd-material-tabs__container {
-    padding: 0 5px;
-    margin-top: 60px; }
-
-.rd-material-tabs__container .rd-material-tab {
+  padding: 0 5px;
+  margin-top: 60px; }
+  .rd-material-tabs__container .rd-material-tab {
     float: left;
     width: 100%; }
-
-.rd-material-tabs__container .thumb {
+  .rd-material-tabs__container .thumb {
     margin-top: 10px; }
 
 .rd-material-tabs-canMove {
-    cursor: w-resize; }
+  cursor: w-resize; }
 
 .rd-material-tabs-grab, .rd-material-tabs-grab a {
-    cursor: -moz-grabbing;
-    cursor: -webkit-grabbing;
-    cursor: grabbing; }
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+  cursor: grabbing; }

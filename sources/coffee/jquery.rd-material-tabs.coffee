@@ -2,7 +2,7 @@
  * @module       RDMaterialTabs
  * @author       Rafael Shayvolodyan
  * @see          https://ua.linkedin.com/in/rafael-shayvolodyan-3a297b96
- * @version      1.0.2
+ * @version      1.0.3
 ###
 
 (($, document, window) ->
@@ -135,6 +135,7 @@
         margin = ctx.getOption('marginContent')
 
       item = stage.find('.' + ctx.settings.itemClass)
+#      console.log ctx.getOption('dragList')
       if list and  not ctx.getOption('dragList')
         ctx.setListTranslate(ctx, 0)
         stage.css({
@@ -413,6 +414,7 @@
       if ctx.getOption('items') < ctx.$list.find('.' + ctx.settings.itemClass).length
         itemWidth = ctx.getListItemWidth(ctx)
         offset = -((itemWidth * index) + ctx.getOption('margin') * index)
+        console.log ctx.getMaxTranslate(ctx, ctx.$list)
         if offset < ctx.getMaxTranslate(ctx, ctx.$list)
           offset = ctx.getMaxTranslate(ctx, ctx.$list)
         ctx.setListTranslate(ctx, offset)
@@ -424,14 +426,19 @@
      * @protected
      ###
     moveTo: (index) ->
+      prevent = false
       if index != @.activeIndex
-        @.options.callbacks.onChangeStart.call(@) if @.options.callbacks.onChangeStart
-      itemWidth = @.getContentItemWidth(@)
-      offset = -((itemWidth * index) + @.getOption('marginContent') * index)
-      @.setContentTranslate(@, offset)
-      if @.getOption('dragList')
-        @.moveListTo(@, index)
-      @.updateActive(@, index)
+        if @.options.callbacks.onChangeStart
+          callback = @.options.callbacks.onChangeStart.call(@, @.activeIndex, index)
+          if callback? and not callback
+            prevent = true
+      if not prevent
+        itemWidth = @.getContentItemWidth(@)
+        offset = -((itemWidth * index) + @.getOption('marginContent') * index)
+        @.setContentTranslate(@, offset)
+        if @.getOption('dragList')
+          @.moveListTo(@, index)
+        @.updateActive(@, index)
 
       return
 
@@ -448,7 +455,6 @@
 
       ctx.$list.on('mouseleave', ->
         ctx.$element.removeClass('rd-material-tabs-canMove')
-        console.log 1
         return
       )
       ctx.$content.on('mouseenter', ->
@@ -603,7 +609,7 @@
     * @protected
     ###
     getMaxTranslate: (ctx, el) ->
-      return ctx.$win.width() - ctx.getWidth(ctx, el.find('.' + ctx.settings.stageClass))
+      return ctx.$element.outerWidth() - ctx.getWidth(ctx, el.find('.' + ctx.settings.stageClass))
 
     ###*
     * Sets Vendor prefix
@@ -655,8 +661,8 @@
     getOption: (key)->
       if @.options.responsive?
         for point of @.options.responsive
-          if point <= @.$win.width() then targetPoint = point
-        if @.options.responsive[targetPoint][key]? then @.options.responsive[targetPoint][key] else @.options[key]
+          if point <= window.innerWidth then targetPoint = point
+        if @.options.responsive[targetPoint]? and @.options.responsive[targetPoint][key]? then @.options.responsive[targetPoint][key] else @.options[key]
       else
         @.options[key]
 

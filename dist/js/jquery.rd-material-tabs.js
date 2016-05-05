@@ -1,8 +1,9 @@
+
 /**
  * @module       RDMaterialTabs
  * @author       Rafael Shayvolodyan
  * @see          https://ua.linkedin.com/in/rafael-shayvolodyan-3a297b96
- * @version      1.0.2
+ * @version      1.0.3
  */
 
 (function() {
@@ -476,6 +477,7 @@
         if (ctx.getOption('items') < ctx.$list.find('.' + ctx.settings.itemClass).length) {
           itemWidth = ctx.getListItemWidth(ctx);
           offset = -((itemWidth * index) + ctx.getOption('margin') * index);
+          console.log(ctx.getMaxTranslate(ctx, ctx.$list));
           if (offset < ctx.getMaxTranslate(ctx, ctx.$list)) {
             offset = ctx.getMaxTranslate(ctx, ctx.$list);
           }
@@ -491,19 +493,25 @@
        */
 
       RDMaterialTabs.prototype.moveTo = function(index) {
-        var itemWidth, offset;
+        var callback, itemWidth, offset, prevent;
+        prevent = false;
         if (index !== this.activeIndex) {
           if (this.options.callbacks.onChangeStart) {
-            this.options.callbacks.onChangeStart.call(this);
+            callback = this.options.callbacks.onChangeStart.call(this, this.activeIndex, index);
+            if ((callback != null) && !callback) {
+              prevent = true;
+            }
           }
         }
-        itemWidth = this.getContentItemWidth(this);
-        offset = -((itemWidth * index) + this.getOption('marginContent') * index);
-        this.setContentTranslate(this, offset);
-        if (this.getOption('dragList')) {
-          this.moveListTo(this, index);
+        if (!prevent) {
+          itemWidth = this.getContentItemWidth(this);
+          offset = -((itemWidth * index) + this.getOption('marginContent') * index);
+          this.setContentTranslate(this, offset);
+          if (this.getOption('dragList')) {
+            this.moveListTo(this, index);
+          }
+          this.updateActive(this, index);
         }
-        this.updateActive(this, index);
       };
 
       RDMaterialTabs.prototype.canMoveCursor = function() {
@@ -518,7 +526,6 @@
         });
         ctx.$list.on('mouseleave', function() {
           ctx.$element.removeClass('rd-material-tabs-canMove');
-          console.log(1);
         });
         ctx.$content.on('mouseenter', function() {
           if (ctx.getOption('dragContent')) {
@@ -710,7 +717,7 @@
        */
 
       RDMaterialTabs.prototype.getMaxTranslate = function(ctx, el) {
-        return ctx.$win.width() - ctx.getWidth(ctx, el.find('.' + ctx.settings.stageClass));
+        return ctx.$element.outerWidth() - ctx.getWidth(ctx, el.find('.' + ctx.settings.stageClass));
       };
 
 
@@ -780,11 +787,11 @@
         var point, targetPoint;
         if (this.options.responsive != null) {
           for (point in this.options.responsive) {
-            if (point <= this.$win.width()) {
+            if (point <= window.innerWidth) {
               targetPoint = point;
             }
           }
-          if (this.options.responsive[targetPoint][key] != null) {
+          if ((this.options.responsive[targetPoint] != null) && (this.options.responsive[targetPoint][key] != null)) {
             return this.options.responsive[targetPoint][key];
           } else {
             return this.options[key];
